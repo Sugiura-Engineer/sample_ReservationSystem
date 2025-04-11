@@ -41,3 +41,22 @@ app.post('/api/reserve', async (req, res) => {
 app.listen(port, () => {
   console.log(`サーバー起動中：http://localhost:${port}`);
 });
+
+
+//イメージスクロール用API
+//まずはDB接続.
+// APIエンドポイント：画像パス取得（id=1 の画像）
+// APIエンドポイント：画像パス取得（id=1 の画像）
+app.get('/api/image', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT imgpass FROM imgpass WHERE id = 1');
+    if (rows.length > 0) {
+      res.json({ imgpass: rows[0].imgpass });
+    } else {
+      res.status(404).json({ error: '画像が見つかりません' });
+    }
+  } catch (err) {
+    console.error('画像取得エラー:', err);
+    res.status(500).json({ error: '画像の取得に失敗しました' });
+  }
+});
