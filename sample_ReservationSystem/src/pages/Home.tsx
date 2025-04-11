@@ -1,7 +1,7 @@
 import '../css/Home.css';
 
 import {Link} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useEffect, useState} from "react";//待機して発火する、普通のJSの関数だと思っておいていい感じ、useEffect=ページが表示されたときや、特定の変数が変わったときに、自動で何かの処理をやらせる機能.
 
 const Home = () => {
     //imgscroll.
@@ -11,7 +11,7 @@ const Home = () => {
           try {
             const res = await fetch("http://localhost:3001/api/image");
             const data = await res.json();
-            setImgUrl(data.imgpass); // "/img/xxx.jpg" をセット
+            setImgUrl(data.imgpass); // "/img/xxx.jpg" をセット.
           } catch (err) {
             console.error("画像取得失敗:", err);
           }
@@ -27,10 +27,22 @@ const Home = () => {
         const res = await fetch("http://localhost:3001/api/stores");
         const data = await res.json();
         setStores(data);
+        setFilteredStores(data); // 初期表示：すべて
     };
     fetchStores();
     },[]);
 
+    //検索機能.useStateはReactの持つ、変化する値や状態を管理する仕組み
+    const [keyword, setKeyword] = useState(""); //kwywordは入力された文字列のこと、setKeywordはこれを使う関数、useStateで初期値を空の文字列に、
+    const [filteredStores, setFilteredStores] = useState([]);
+
+    const handleSearch=()=>{
+        const results = stores.filter((store) =>
+        store.name.includes(keyword)
+        )
+        setFilteredStores(results);
+    };
+    
     return (
         <>
         <div className="page">
@@ -47,16 +59,21 @@ const Home = () => {
             </div>
             <div className='search'>
                 <div className='search__container'>
-                    <input type="text" placeholder="   キーワードを入力" className="keyword-form"/>
-                    <button className="search-button">検索</button>
+                    <input type="text" placeholder="   キーワードを入力" className="keyword-form"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    />
+                    <button className="search-button" onClick={handleSearch}>検索</button>
                 </div>
             </div>
             <div className='tag'>
                 <a>お店一覧</a>
             </div>
+
             <div className='stores'>
                 <div className='store-list'>
-                    {stores.map((store) => (
+                    {filteredStores.length > 0 ? (
+                        filteredStores.map((store) => (
                         <Link to={`/store/${store.id}`}
                             state={{
                                 name: store.name,
@@ -74,7 +91,10 @@ const Home = () => {
                                     <p>{store.description}</p>
                                 </div>
                         </Link>
-                    ))}
+                    ))
+                ): (
+                    <p>ヒットしませんでした</p>
+                    )}
                 </div>                  
             </div>
         </div>
