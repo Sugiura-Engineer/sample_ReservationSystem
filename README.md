@@ -1,2 +1,10 @@
 # sample_ReservationSystem
-<https://sugiura-engineer.github.io/sample_ReservationSystem/index.html>
+勉強のために制作した予約サイトアプリです
+
+フロントエンド<React>
+バックエンド<Node.js>
+データベース<MySQL>
+（エディタ<vsCode>）
+
+
+
